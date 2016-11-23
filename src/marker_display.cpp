@@ -72,7 +72,6 @@ void MarkerDisplay::incomingMarker(const visualization_msgs::Marker::ConstPtr& m
 //deletes markers from the scene
 void MarkerDisplay::deleteMarker(MarkerID id)
 {
-
     MarkerBasePtr marker;
     M_IDToMarker::iterator it = markers_.find( id );
     if( it != markers_.end() )
@@ -139,7 +138,7 @@ void MarkerDisplay::processMessage( const visualization_msgs::Marker::ConstPtr& 
     }
 }
 
-//checks if a marker is already displayed on the screen, if not creates a new osg_markers::TriangleListMarker object
+//if a marker is already displayed on the screen, replace it with the new one
 void MarkerDisplay::processAdd( const visualization_msgs::Marker::ConstPtr& message )
 {
     bool create = true;
@@ -150,15 +149,7 @@ void MarkerDisplay::processAdd( const visualization_msgs::Marker::ConstPtr& mess
       {
         marker = it->second;
         markers_with_expiration_.erase(marker);
-
-        if ( message->type == marker->getMessage()->type )
-        {
-          create = false;
-        }
-        else
-        {
-          markers_.erase( it );
-        }
+        processDelete( message );
       }
 
       if ( create )
@@ -170,8 +161,8 @@ void MarkerDisplay::processAdd( const visualization_msgs::Marker::ConstPtr& mess
               case visualization_msgs::Marker::SPHERE:
               case visualization_msgs::Marker::ARROW:
                 {
-                  //scene_node_->asGroup()->removeChildren(0, scene_node_->asGroup()->getNumChildren());
-                  //marker.reset(new osg_markers::ShapeMarker(scene_node_));
+                   //marker.reset(new osg_markers::ShapeMarker(scene_node_));
+                  //markers_.insert(std::make_pair(MarkerID(message->ns, message->id), marker));
                 }
                 break;
                case visualization_msgs::Marker::TRIANGLE_LIST:
